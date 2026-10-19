@@ -1,0 +1,71 @@
+---
+title: Nodearr
+description: Get media from your friends' libraries, through the Arr apps you already run.
+template: splash
+head:
+  - tag: title
+    content: Nodearr, your friends' libraries in your Arr apps
+editUrl: false
+hero:
+  tagline: Your friends' libraries, in your Arr apps. Nodearr sits beside Sonarr, Radarr, Lidarr and Whisparr as one more indexer and download client, and fetches what they want straight from a friend who has it.
+  image:
+    file: ../../assets/logo.svg
+    alt: The Nodearr icon
+  actions:
+    - text: Download
+      link: /download/
+      icon: download
+    - text: Read the guide
+      link: /guide/
+      variant: minimal
+      icon: right-arrow
+    - text: GitHub
+      link: https://github.com/Nodearr/Nodearr
+      variant: minimal
+      icon: external
+---
+
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+
+<Aside type="note" title="Pre-release">
+Everything Nodearr set out to do for its first version works, and has been run between machines on different home networks with no port forwarded. It has not yet been lived with for weeks. See [what is still open](https://github.com/Nodearr/Nodearr/blob/main/docs/plans/v1-implementation-plan.md#what-is-still-open).
+</Aside>
+
+When your Sonarr wants an episode a friend has, it finds it in Nodearr, grabs it, and imports it like any other download. The file comes straight from your friend's machine to yours, and is checked against its hash before your Arr app sees it.
+
+Nobody else is involved. There is no account, no server of ours that sees your library, and no relay that carries your files. Each of you runs Nodearr on your own machine, decides what the others may see, and can end a friendship at any time.
+
+<CardGrid>
+  <Card title="Nothing new to learn in your Arr apps" icon="puzzle">
+    Nodearr adds itself to each one as an indexer and a download client. Their searches, grabs, quality profiles, upgrades and imports work as they always have.
+  </Card>
+  <Card title="Friends by invite" icon="add-document">
+    One friend creates an invite code, the other pastes it in, and the two nodes trust each other. Revoke a friend at any time.
+  </Card>
+  <Card title="Share what you choose" icon="setting">
+    A new friend is offered your library apart from what you hide. Choose which of your apps that takes in, or give a friend only the series, films and albums you pick.
+  </Card>
+  <Card title="Browse what friends have" icon="magnifier">
+    With posters from their own Arr apps, and at a glance what they have that you are missing, or have in a better quality.
+  </Card>
+  <Card title="Send a friend something" icon="rocket">
+    Pick a title and a friend. Their Nodearr offers to add it to their Arr app, filled in the way the rest of their library is, and fetch it.
+  </Card>
+  <Card title="Straight between you, and checked" icon="approve-check">
+    Connections are encrypted, and files go directly between the two machines, through most home routers without forwarding a port.
+  </Card>
+</CardGrid>
+
+## What it works with
+
+| App | What Nodearr does with it |
+| --- | --- |
+| **Sonarr** | Shares whole series, seasons or single episodes. Finds episodes by TVDB, TMDb or IMDb ID, by scene numbering, and by air date for daily shows. |
+| **Radarr** | Finds movies by TMDb or IMDb ID. |
+| **Lidarr** | Shares whole artists or single albums, and moves an album as a folder of tracks. |
+| **Whisparr v3 and v2** | Finds films by ID, and scenes by studio, release date, title and code, as Whisparr searches for them. |
+| **Prowlarr** | Adds Nodearr as an indexer, so you can search it there with your others. |
+
+It runs where your Arr apps run: Windows, Linux, macOS, and Docker for amd64 and arm64. Most of it is built from [Sonarr](https://github.com/Sonarr/Sonarr), so it looks and works the way you expect.
+
+Nodearr is open source, under GPL-3.0, and is not affiliated with or endorsed by the Sonarr, Radarr, Lidarr, Whisparr, Prowlarr or Servarr projects.

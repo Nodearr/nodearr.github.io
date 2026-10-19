@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nodearr API</title>
+  <meta name="description" content="Nodearr's API, version 5, described from the code of the version the site documents." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <style>
+    body { margin: 0; }
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: #0d1117;
+      color: #e6edf3;
+      font: 600 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+    }
+    .site-header img { width: 28px; height: 28px; }
+    .site-header nav { margin-left: auto; display: flex; gap: 16px; }
+    .site-header a { color: #5eead4; text-decoration: none; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <img src="/favicon.svg" alt="" />
+    <span>Nodearr API</span>
+    <nav>
+      <a href="/guide/">User guide</a>
+      <a href="/">nodearr.com</a>
+      <a href="https://github.com/Nodearr/Nodearr">GitHub</a>
+    </nav>
+  </header>
+  <div id="app"></div>
+
+  <!-- The description is the one in the Nodearr repository at the version the site documents,
+       copied here when the site is built (scripts/sync-docs.mjs). Scalar is loaded from jsDelivr, and its
+       telemetry, AI agent and remote fonts are off, as on sonarr.tv's API page. -->
+  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.72.1/dist/browser/standalone.js"></script>
+  <script>
+    Scalar.createApiReference('#app', {
+      url: '/api/openapi.json',
+      hideClientButton: true,
+      telemetry: false,
+      agent: { disabled: true },
+      mcp: { disabled: true },
+      withDefaultFonts: false,
+      showDeveloperTools: 'never',
+    });
+  </script>
+</body>
+</html>
