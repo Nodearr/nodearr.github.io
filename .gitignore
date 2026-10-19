@@ -7,6 +7,7 @@ src/content/docs/guide/
 src/content/docs/changelog.md
 src/docs-version.json
 public/api/openapi.json
+public/guide/
 
 # A checkout of the Nodearr repository made by the deploy workflow.
 nodearr/
