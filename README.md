@@ -11,6 +11,7 @@ The user guide, the changelog and the API description are not kept here. They li
 | From Nodearr/Nodearr | On the site |
 | --- | --- |
 | `docs/user-guide/*.md` | `/guide/`, in the order the guide's contents page lists them |
+| `docs/user-guide/images/` | `/guide/images/`, the guide's screenshots |
 | `CHANGELOG.md` | `/changelog/` |
 | `src/Nodearr.Api.V5/openapi.json` | `/api/`, rendered with [Scalar](https://scalar.com), as sonarr.tv's API page is |
 

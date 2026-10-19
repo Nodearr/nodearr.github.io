@@ -52,6 +52,12 @@ function sitePath(repoPath) {
   return guide ? `/guide/${guide[1]}/` : null;
 }
 
+// Where an image of the guide's is on the site: the guide's images are copied with it.
+function siteImage(repoPath) {
+  const image = repoPath.match(/^docs\/user-guide\/(images\/.+)$/);
+  return image ? `/guide/${image[1]}` : null;
+}
+
 // Every link and image in the Markdown, outside code, pointed where it works on the site.
 function rewriteLinks(markdown, from) {
   const parts = markdown.split(/(```[\s\S]*?```|`[^`\n]*`)/);
@@ -60,18 +66,19 @@ function rewriteLinks(markdown, from) {
     .map((part, i) =>
       i % 2 === 1
         ? part
-        : part.replace(/(!?)\]\(([^)\s]+)\)/g, (whole, image, target) => {
+        : // [text](target), or ![alt](target) for an image: the ! comes before the [.
+          part.replace(/(!?)\[([^\]]*)\]\(([^)\s]+)\)/g, (whole, image, text, target) => {
             if (/^([a-z]+:|#|\/)/i.test(target)) return whole;
 
             const [file, anchor] = target.split('#');
             const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(from), file));
             const hash = anchor ? `#${anchor}` : '';
-            const onSite = image ? null : sitePath(resolved);
+            const onSite = image ? siteImage(resolved) : sitePath(resolved);
 
-            if (onSite) return `${image}](${onSite}${hash})`;
+            if (onSite) return `${image}[${text}](${onSite}${hash})`;
 
             const kind = image ? 'raw' : file.endsWith('/') ? 'tree' : 'blob';
-            return `${image}](${github}/${kind}/${ref}/${resolved}${hash})`;
+            return `${image}[${text}](${github}/${kind}/${ref}/${resolved}${hash})`;
           })
     )
     .join('');
@@ -116,6 +123,13 @@ for (const name of readdirSync(guideDir).filter((f) => f.endsWith('.md'))) {
 }
 
 writeFileSync(path.join(site, 'src', 'content', 'docs', 'changelog.md'), page('CHANGELOG.md'));
+
+// The guide's screenshots, served beside its pages.
+const images = path.join(site, 'public', 'guide', 'images');
+rmSync(images, { recursive: true, force: true });
+if (existsSync(path.join(guideDir, 'images'))) {
+  cpSync(path.join(guideDir, 'images'), images, { recursive: true });
+}
 
 mkdirSync(path.join(site, 'public', 'api'), { recursive: true });
 cpSync(path.join(repo, 'src', 'Nodearr.Api.V5', 'openapi.json'), path.join(site, 'public', 'api', 'openapi.json'));
