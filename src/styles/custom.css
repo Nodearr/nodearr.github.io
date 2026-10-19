@@ -1,0 +1,17 @@
+/* The teal of the Nodearr icon, for links and accents, in both themes. */
+:root {
+  --sl-color-accent-low: #063b36;
+  --sl-color-accent: #14b8a6;
+  --sl-color-accent-high: #99f6e4;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #ccfbf1;
+  --sl-color-accent: #0d9488;
+  --sl-color-accent-high: #134e4a;
+}
+
+/* The hero's icon is a badge, so it is shown at a badge's size. */
+.hero img {
+  max-width: 18rem;
+}

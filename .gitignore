@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+
+# Brought in from the Nodearr repository by scripts/sync-docs.mjs, at the version being published.
+src/content/docs/guide/
+src/content/docs/changelog.md
+src/docs-version.json
+public/api/openapi.json
+
+# A checkout of the Nodearr repository made by the deploy workflow.
+nodearr/

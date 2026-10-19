@@ -1,0 +1,91 @@
+# Builds nodearr.com and publishes it with GitHub Pages.
+#
+# The user guide, the changelog and the API description come from the Nodearr repository, at the
+# newest published release, so the site describes what people can download. It is built:
+#   - on every push to main here, for changes to the site itself;
+#   - when Nodearr publishes a release, which sends a "nodearr-release" dispatch with its tag;
+#   - by hand, from the Actions tab, optionally for another tag or branch.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [nodearr-release]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: The Nodearr tag or branch to publish the docs of. Empty for the newest release.
+        required: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Choose the Nodearr version
+        id: ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FROM_RELEASE: ${{ github.event.client_payload.tag }}
+          FROM_INPUT: ${{ inputs.ref }}
+        run: |
+          ref="${FROM_RELEASE:-$FROM_INPUT}"
+          if [ -z "$ref" ]; then
+            ref=$(gh api repos/Nodearr/Nodearr/releases --jq '[.[] | select(.draft | not)][0].tag_name')
+          fi
+          if [ -z "$ref" ]; then
+            echo "::error::Nodearr has no published release, and no tag or branch was given"
+            exit 1
+          fi
+          echo "Publishing the docs of Nodearr $ref"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v7
+        with:
+          repository: Nodearr/Nodearr
+          ref: ${{ steps.ref.outputs.ref }}
+          path: nodearr
+          sparse-checkout: |
+            docs
+            CHANGELOG.md
+            src/Nodearr.Api.V5/openapi.json
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: node scripts/sync-docs.mjs --repo nodearr --ref "${{ steps.ref.outputs.ref }}"
+
+      - run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
