@@ -13,7 +13,7 @@ The user guide, the changelog and the API description are not kept here. They li
 | `docs/user-guide/*.md` | `/guide/`, in the order the guide's contents page lists them |
 | `docs/user-guide/images/` | `/guide/images/`, the guide's screenshots |
 | `CHANGELOG.md` | `/changelog/` |
-| `src/Nodearr.Api.V5/openapi.json` | `/api/`, rendered with [Scalar](https://scalar.com), as sonarr.tv's API page is |
+| `src/Nodearr.Api.V5/openapi.json` | `/api/`, rendered with [Scalar](https://scalar.com) |
 
 The guide is still written for GitHub, where it is read too. Links between its pages become links between the site's pages. Links to anything else in the repository, such as decision records or `SECURITY.md`, become links to it on GitHub at the same release. A guide page's "Edit page" link goes to the file in Nodearr/Nodearr.
 
@@ -31,21 +31,23 @@ Repository settings it needs: Settings → Pages → Source set to **GitHub Acti
 
 ## Working on it
 
-Node.js 22 or newer, and a checkout of Nodearr/Nodearr beside this one, at `../Nodearr/Nodearr`, or wherever `--repo` or `NODEARR_REPO` says:
+Node.js 22.12.0 or newer (Astro's minimum), and a checkout of Nodearr/Nodearr beside this one, at `../Nodearr/Nodearr`, or wherever `--repo` or `NODEARR_REPO` says:
 
 ```sh
 npm ci
 ```
 
 ```sh
-node scripts/sync-docs.mjs --repo ../Nodearr/Nodearr --ref v0.1.0
+node scripts/sync-docs.mjs --repo ../Nodearr/Nodearr --ref main
 ```
 
 ```sh
 npm run dev
 ```
 
-`--ref` is the tag the checkout is at, which links to GitHub point to. Without it, the script uses the tag at the checkout's HEAD, or `main`. What it copies in is not committed.
+The script copies the checkout's saved files, including uncommitted edits. `--ref` only sets the tag or branch in links to GitHub; it does not check out or fetch that version. For a release preview, first put the source checkout at that tag and give the same tag to `--ref`. Without it, the script uses the tag at the checkout's HEAD, or `main`. The copied files are not committed.
+
+Keep guide links relative, with plain text labels such as `[example compose file](../../docker/docker-compose.yml)`. The link rewriter leaves code spans alone, so a label containing backticks prevents that link from being rewritten.
 
 `npm run build` writes the site to `dist/`. Set `GITHUB_TOKEN` to read the newest release without GitHub's anonymous rate limit.
 
