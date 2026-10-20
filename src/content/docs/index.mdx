@@ -7,7 +7,7 @@ head:
     content: Nodearr, your friends' libraries in your Arr apps
 editUrl: false
 hero:
-  tagline: Your friends' libraries, in your Arr apps. Nodearr sits beside Sonarr, Radarr, Lidarr and Whisparr as one more indexer and download client, and fetches what they want straight from a friend who has it.
+  tagline: Your friends' libraries, in your Arr apps. Share media with people you trust, and let your existing apps find and import it directly from their machines.
   image:
     file: ../../assets/logo.svg
     alt: The Nodearr icon
@@ -31,9 +31,9 @@ import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
 Everything Nodearr set out to do for its first version works, and has been run between machines on different home networks with no port forwarded. It has not yet been lived with for weeks. See [what is still open](https://github.com/Nodearr/Nodearr/blob/main/docs/plans/v1-implementation-plan.md#what-is-still-open).
 </Aside>
 
-When your Sonarr wants an episode a friend has, it finds it in Nodearr, grabs it, and imports it like any other download. The file comes straight from your friend's machine to yours, and is checked against its hash before your Arr app sees it.
+When your [Sonarr](https://sonarr.tv/) wants an episode a friend has, it finds it in Nodearr, grabs it, and imports it like any other download. The file comes straight from your friend's machine to yours, and is checked against its hash before your Arr app sees it.
 
-Nobody else is involved. There is no account, no server of ours that sees your library, and no relay that carries your files. Each of you runs Nodearr on your own machine, decides what the others may see, and can end a friendship at any time.
+Each person runs Nodearr on their own machine, chooses what to share and can revoke trust at any time. You do not need a Nodearr account, and the project receives no copy of your library. Public relays help nodes connect, but downloaded media travels directly between friends. See [Privacy and security](/guide/privacy-and-security/) for what friends and relay operators can see.
 
 <CardGrid>
   <Card title="Nothing new to learn in your Arr apps" icon="puzzle">
@@ -43,13 +43,13 @@ Nobody else is involved. There is no account, no server of ours that sees your l
     One friend creates an invite code, the other pastes it in, and the two nodes trust each other. Revoke a friend at any time.
   </Card>
   <Card title="Share what you choose" icon="setting">
-    A new friend is offered everything except Hidden from the apps marked Share With New Friends: all but Whisparr by default. Change the apps for one friend, or share only lists of the series, films and albums you pick.
+    A new friend receives files from apps with **Share With New Friends** enabled, except titles on **Hidden**. Both [Whisparr](https://whisparr.com/) versions are excluded by default. Choose apps for each friend, or share only selected titles through lists.
   </Card>
   <Card title="Browse what friends have" icon="magnifier">
-    With posters from their own Arr apps, and at a glance what they have that you are missing, or have in a better quality.
+    Browse posters from your friends' Arr apps and see which files you are missing or could upgrade under your own quality profiles.
   </Card>
   <Card title="Send a friend something" icon="rocket">
-    Pick a title and a friend. Their Nodearr offers to add it to their Arr app, filled in the way the rest of their library is, and ask the app to search for it.
+    Pick a title and a friend. They receive a card on **Home**, where **Get it** adds the title to their Arr app if needed and asks the app to search its enabled indexers.
   </Card>
   <Card title="Straight between you, and checked" icon="approve-check">
     Connections are encrypted, and files go directly between the two machines, through most home routers without forwarding a port.
@@ -60,12 +60,13 @@ Nobody else is involved. There is no account, no server of ours that sees your l
 
 | App | What Nodearr does with it |
 | --- | --- |
-| **Sonarr** | Shares whole series, seasons or single episodes. Finds episodes by TVDB, TMDb or IMDb ID, by scene numbering, and by air date for daily shows. |
-| **Radarr** | Finds movies by TMDb or IMDb ID. |
-| **Lidarr** | Shares whole artists or single albums, and moves an album as a folder of tracks. |
-| **Whisparr v3 and v2** | Finds films by ID, and scenes by studio, release date, title and code, as Whisparr searches for them. |
-| **Prowlarr** | Adds Nodearr as an indexer, so you can search it there with your others. |
+| Sonarr | Shares whole series, seasons or single episodes. Finds episodes by TVDB, TMDb or IMDb ID, by scene numbering, and by air date for daily shows. |
+| [Radarr](https://radarr.video/) | Finds movies by TMDb or IMDb ID. |
+| [Lidarr](https://lidarr.audio/) | Shares whole artists or single albums, and moves an album as a folder of tracks. |
+| Whisparr v3 | Reads films and scenes. Finds films by ID and scenes by studio, release date, title or code. |
+| Whisparr v2 | Reads sites and scenes. Finds scenes by studio, release date, title or code, including scenes shared by v3 users. |
+| [Prowlarr](https://prowlarr.com/) | Adds Nodearr as an indexer, so you can search it there with your others. |
 
-It runs where your Arr apps run: Windows, Linux, macOS, and Docker for amd64 and arm64. Most of it is built from [Sonarr](https://github.com/Sonarr/Sonarr), so it looks and works the way you expect.
+It runs where your Arr apps run: Windows, Linux, macOS, and [Docker](https://docs.docker.com/) for amd64 and arm64. Most of it is built from [Sonarr](https://github.com/Sonarr/Sonarr), so it looks and works the way you expect.
 
-Nodearr is open source, under GPL-3.0, and is not affiliated with or endorsed by the Sonarr, Radarr, Lidarr, Whisparr, Prowlarr or Servarr projects.
+Nodearr is open source, under GPL-3.0, and is not affiliated with or endorsed by the Sonarr, Radarr, Lidarr, Whisparr, Prowlarr or [Servarr](https://wiki.servarr.com/) projects.
