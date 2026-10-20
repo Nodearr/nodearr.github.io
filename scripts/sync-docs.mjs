@@ -62,14 +62,19 @@ function siteImage(repoPath) {
 
 // Every link and image in the Markdown, outside code, pointed where it works on the site.
 function rewriteLinks(markdown, from) {
-  const parts = markdown.split(/(```[\s\S]*?```|`[^`\n]*`)/);
+  // Code blocks are left as they are. Outside them, one pass finds either inline code, left as it
+  // is, or a link: [text](target), or ![alt](target) for an image, the ! before the [. A link's
+  // text may itself hold inline code, as in [`docker-compose.yml`](...); whichever starts first
+  // wins, so a link inside inline code is not taken for one.
+  const parts = markdown.split(/(```[\s\S]*?```)/);
+  const linkOrCode = /(`[^`\n]*`)|(!?)\[((?:[^\]`\n]|`[^`\n]*`)*)\]\(([^)\s]+)\)/g;
 
   return parts
     .map((part, i) =>
       i % 2 === 1
         ? part
-        : // [text](target), or ![alt](target) for an image: the ! comes before the [.
-          part.replace(/(!?)\[([^\]]*)\]\(([^)\s]+)\)/g, (whole, image, text, target) => {
+        : part.replace(linkOrCode, (whole, code, image, text, target) => {
+            if (code) return whole;
             if (/^([a-z]+:|#|\/)/i.test(target)) return whole;
 
             const [file, anchor] = target.split('#');

@@ -47,7 +47,7 @@ npm run dev
 
 The script copies the checkout's saved files, including uncommitted edits. `--ref` only sets the tag or branch in links to GitHub; it does not check out or fetch that version. For a release preview, first put the source checkout at that tag and give the same tag to `--ref`. Without it, the script uses the tag at the checkout's HEAD, or `main`. The copied files are not committed.
 
-Keep guide links relative, with plain text labels such as `[example compose file](../../docker/docker-compose.yml)`. The link rewriter leaves code spans alone, so a label containing backticks prevents that link from being rewritten.
+Keep guide links relative. A link's text may be plain or code, as in ``[`docker-compose.yml`](../../docker/docker-compose.yml)``; code outside a link, and code blocks, are left alone.
 
 `npm run build` writes the site to `dist/`. Set `GITHUB_TOKEN` to read the newest release without GitHub's anonymous rate limit.
 
