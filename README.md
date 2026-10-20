@@ -27,32 +27,42 @@ What is written here: the home page, the download page, which reads the newest r
 - when Nodearr publishes a release: its workflow sends a `nodearr-release` dispatch with the tag;
 - by hand from the Actions tab, optionally for another Nodearr tag or branch.
 
-Repository settings it needs: Settings → Pages → Source set to **GitHub Actions**, and the custom domain `nodearr.com`.
+In the site's GitHub repository, go to **Settings > Pages**, set **Source** to **GitHub Actions** and configure the custom domain as `nodearr.com`.
 
 ## Working on it
 
-Node.js 22.12.0 or newer (Astro's minimum), and a checkout of Nodearr/Nodearr beside this one, at `../Nodearr/Nodearr`, or wherever `--repo` or `NODEARR_REPO` says:
+You need [Node.js](https://nodejs.org/) 22.12.0 or newer and a local checkout of Nodearr/Nodearr. The examples assume that checkout is at `../Nodearr/Nodearr`; use `--repo PATH` or `NODEARR_REPO` for another location.
+
+From this site's repository root, install dependencies:
 
 ```sh
 npm ci
 ```
 
+Copy the guide and API description from the Nodearr checkout:
+
 ```sh
 node scripts/sync-docs.mjs --repo ../Nodearr/Nodearr --ref main
 ```
+
+Start the local development site:
 
 ```sh
 npm run dev
 ```
 
-The script copies the checkout's saved files, including uncommitted edits. `--ref` only sets the tag or branch in links to GitHub; it does not check out or fetch that version. For a release preview, first put the source checkout at that tag and give the same tag to `--ref`. Without it, the script uses the tag at the checkout's HEAD, or `main`. The copied files are not committed.
+Run the sync command after changing guide files in the Nodearr checkout, then reload the development site. The script copies saved files, including uncommitted edits. Generated copies are not committed here.
+
+`--ref` sets the version used in GitHub links and metadata; it does not fetch or check out that version. For a release preview, check out the release tag in the Nodearr repository first, then pass the same tag to `--ref`. Without `--ref`, the script uses an exact tag on the checkout's HEAD, or `main` if there is none.
 
 Keep guide links relative. A link's text may be plain or code, as in ``[`docker-compose.yml`](../../docker/docker-compose.yml)``; code outside a link, and code blocks, are left alone.
 
-`npm run build` writes the site to `dist/`. Set `GITHUB_TOKEN` to read the newest release without GitHub's anonymous rate limit.
+After syncing, `npm run build` writes a production site to `dist/`. Set `GITHUB_TOKEN` to avoid GitHub's anonymous rate limit when the build fetches release information.
+
+For prose, UI labels and links, follow the [Nodearr contribution guide](https://github.com/Nodearr/Nodearr/blob/main/CONTRIBUTING.md#writing), which adopts the [Google developer documentation style guide](https://developers.google.com/style/highlights).
 
 `npm audit` reports `postcss-selector-parser` below 7.1.6, through Starlight's code highlighting (expressive-code 0.44). It is slow on crafted CSS, and here it only ever reads the site's own CSS, while the site is built. It goes away when expressive-code moves to the newer parser.
 
 ## Licence
 
-The site's own code and pages are [GPL-3.0](LICENSE), as Nodearr is. Nodearr is not affiliated with or endorsed by the Sonarr, Radarr, Lidarr, Whisparr, Prowlarr or Servarr projects.
+The site's own code and pages are [GPL-3.0](LICENSE), as Nodearr is. Nodearr is not affiliated with or endorsed by the [Sonarr](https://sonarr.tv/), [Radarr](https://radarr.video/), [Lidarr](https://lidarr.audio/), [Whisparr](https://whisparr.com/), [Prowlarr](https://prowlarr.com/) or [Servarr](https://wiki.servarr.com/) projects.

@@ -10,8 +10,8 @@
 //
 // The guide stays written for GitHub, where it is also read: relative links between its pages
 // become links between the site's pages, and links to anything else in the repository become
-// links to it on GitHub, at the same version. Use plain text link labels: links whose labels contain
-// code spans are left alone by the code splitter below.
+// links to it on GitHub, at the same version. Link labels may contain plain text, bold text or
+// inline code. Standalone code spans and fenced code blocks are copied without rewriting.
 
 import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';

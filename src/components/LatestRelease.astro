@@ -27,6 +27,7 @@ try {
 const platforms = [
   {
     name: 'Windows',
+    guide: '/guide/installing/#windows',
     packages: [
       { label: 'Installer, 64-bit', match: /win-x64-installer\.exe$/ },
       { label: 'Zip, 64-bit', match: /win-x64\.zip$/ },
@@ -37,14 +38,16 @@ const platforms = [
   },
   {
     name: 'macOS',
+    guide: '/guide/installing/#macos',
     packages: [
       { label: 'Apple silicon', match: /osx-arm64\.tar\.gz$/ },
       { label: 'Intel', match: /osx-x64\.tar\.gz$/ },
     ],
-    note: 'Unpack it and start ./Nodearr.',
+    note: 'Unpack the archive, open its Nodearr folder, and follow the macOS steps in the installation guide.',
   },
   {
     name: 'Linux',
+    guide: '/guide/installing/#linux',
     packages: [
       { label: 'x64', match: /linux-x64\.tar\.gz$/ },
       { label: 'ARM64', match: /linux-arm64\.tar\.gz$/ },
@@ -52,7 +55,7 @@ const platforms = [
       { label: 'x64, musl (Alpine)', match: /linux-musl-x64\.tar\.gz$/ },
       { label: 'ARM64, musl (Alpine)', match: /linux-musl-arm64\.tar\.gz$/ },
     ],
-    note: 'Unpack it and start ./Nodearr.',
+    note: 'Unpack the archive, open its Nodearr folder, and follow the Linux steps in the installation guide.',
   },
 ];
 
@@ -84,6 +87,7 @@ const published = release ? new Date(release.published_at).toLocaleDateString('e
             })}
           </ul>
           <p class="muted">{platform.note}</p>
+          <p><a href={platform.guide}>{platform.name} installation instructions</a></p>
         </section>
       ))}
 
