@@ -3,13 +3,15 @@
 //
 //   node scripts/sync-docs.mjs [--repo PATH] [--ref TAG]
 //
-// --repo is the checkout, ../Nodearr/Nodearr unless NODEARR_REPO says otherwise. --ref is the tag
-// or branch it is at, which links to anything outside the guide point to on GitHub. Without it,
-// the tag at the checkout's HEAD, or main.
+// --repo is the checkout, ../Nodearr/Nodearr unless NODEARR_REPO says otherwise. Saved working-tree
+// files are copied, including uncommitted edits. --ref only labels GitHub links and version metadata;
+// it does not check out or fetch source. Pass the tag or branch the source is at. Without --ref,
+// the tag at the checkout's HEAD is used, or main.
 //
 // The guide stays written for GitHub, where it is also read: relative links between its pages
 // become links between the site's pages, and links to anything else in the repository become
-// links to it on GitHub, at the same version.
+// links to it on GitHub, at the same version. Use plain text link labels: links whose labels contain
+// code spans are left alone by the code splitter below.
 
 import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';

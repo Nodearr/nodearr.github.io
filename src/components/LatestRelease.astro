@@ -1,7 +1,8 @@
 ---
-// The newest published release of Nodearr, read from GitHub when the site is built. The site is
-// built again whenever a release is published, so this is never older than the newest release.
-// When GitHub cannot be reached, the page points to the Releases page instead.
+// Downloads from the first non-draft release GitHub returns, including pre-releases, at build time.
+// Publishing a release requests a site rebuild; the page keeps its build-time result until the
+// next successful deployment. A failed or empty API response leaves a link to the Releases page.
+// This lookup is independent of the ref used to sync the guide for a manual preview.
 
 const releasesPage = 'https://github.com/Nodearr/Nodearr/releases';
 
