@@ -1,0 +1,30 @@
+---
+import logo from '../assets/logo.svg';
+import Wordmark from './Wordmark.astro';
+
+const { siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<a href={siteTitleHref} class="site-title sl-flex">
+  <img src={logo.src} width={logo.width} height={logo.height} alt="" />
+  <Wordmark />
+</a>
+
+<style>
+  .site-title {
+    align-items: center;
+    gap: var(--sl-nav-gap);
+    font-size: var(--sl-text-h4);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  img {
+    height: calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y));
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+</style>

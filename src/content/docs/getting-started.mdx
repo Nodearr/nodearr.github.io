@@ -1,0 +1,120 @@
+---
+title: Getting started
+description: Install Nodearr, connect your Arr apps and complete your first transfer with a friend.
+next:
+  link: /guide/friends-and-sharing/
+  label: Friends and sharing
+---
+
+import { CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
+import ReleaseDownloads from '../../components/ReleaseDownloads.astro';
+import TabAnchors from '../../components/TabAnchors.astro';
+import Windows from '../../generated/setup/Windows.mdx';
+import Linux from '../../generated/setup/Linux.mdx';
+import MacOS from '../../generated/setup/macOS.mdx';
+import Docker from '../../generated/setup/Docker.mdx';
+import SignIn from '../../generated/setup/SignIn.mdx';
+import Connection from '../../generated/setup/Connection.mdx';
+import Folders from '../../generated/setup/Folders.mdx';
+import Name from '../../generated/setup/Name.mdx';
+import CreateInvite from '../../generated/setup/CreateInvite.mdx';
+import UseInvite from '../../generated/setup/UseInvite.mdx';
+import Verify from '../../generated/setup/Verify.mdx';
+
+<TabAnchors />
+
+Nodearr connects your Arr apps to libraries shared by people you trust. Each person runs their own node and chooses what to share. This guide takes you from installation to a file imported by your Arr app.
+
+## Before you start
+
+- Have a supported library app running: [Sonarr](https://sonarr.tv/), [Radarr](https://radarr.video/), [Lidarr](https://lidarr.audio/) or [Whisparr](https://whisparr.com/). You will need its address and API key, found in that app under **Settings > General**.
+- Choose a machine where Nodearr can read your libraries and your Arr apps can read its completed downloads. Running Nodearr alongside your apps usually makes this easier.
+- To finish pairing and try a transfer, have a friend with Nodearr running and at least one file to share. You can install Nodearr and connect your apps before they are ready.
+
+[Prowlarr](https://prowlarr.com/) is optional. Connect each library app directly to Nodearr even if you already use Prowlarr.
+
+<span id="set-up-your-node" />
+
+## Install Nodearr
+
+Choose your environment. Each tab contains the steps for that installation.
+
+<Tabs syncKey="platform">
+  <TabItem label="Windows">
+
+    <ReleaseDownloads platform="Windows" />
+    <Windows />
+
+  </TabItem>
+  <TabItem label="Linux">
+
+    <ReleaseDownloads platform="Linux" />
+    <Linux />
+
+  </TabItem>
+  <TabItem label="macOS">
+
+    <ReleaseDownloads platform="macOS" />
+    <MacOS />
+
+  </TabItem>
+  <TabItem label="Docker">
+
+    <Docker />
+
+  </TabItem>
+</Tabs>
+
+## Open Nodearr
+
+<SignIn />
+
+## Connect your apps
+
+Connect each library app you want to use. First check folder access, then fill in and save the connection.
+
+### Check folder access
+
+<Folders />
+
+### Fill in the connection
+
+<Connection />
+
+Repeat the connection steps for each library app. After saving, check **Catalog > Local** for its imported library and **System > Status** for folder-access warnings.
+
+## Name your node
+
+<Name />
+
+## Connect with a friend
+
+Both nodes must be running and online. One person creates an invite and the other uses it. Each person chooses what they share; your friend's choice does not change yours.
+
+<Tabs syncKey="pairing-action">
+  <TabItem label="Create an invite">
+
+    <CreateInvite />
+
+  </TabItem>
+  <TabItem label="Use an invite">
+
+    <UseInvite />
+
+  </TabItem>
+</Tabs>
+
+## Verify your first transfer
+
+<Verify />
+
+If a connection or import still fails, [Troubleshooting](/guide/troubleshooting/) explains the warnings and recovery steps.
+
+## Next steps
+
+<CardGrid>
+  <LinkCard title="Choose what each friend sees" href="/guide/friends-and-sharing/#choosing-what-to-share" description="Share selected apps or lists, and keep titles on Hidden private." />
+  <LinkCard title="Explore app-specific behavior" href="/guide/connecting-apps/#each-app" description="Read about supported versions, categories and the differences between Arr apps." />
+  <LinkCard title="Back up your node" href="/guide/backups/" description="Keep your settings and identity key so friends recognize a restored node." />
+  <LinkCard title="Understand privacy and security" href="/guide/privacy-and-security/" description="See what friends and relays can learn about your node." />
+</CardGrid>

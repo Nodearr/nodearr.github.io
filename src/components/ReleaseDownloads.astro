@@ -1,0 +1,36 @@
+---
+import { LinkButton } from '@astrojs/starlight/components';
+import { getLatestRelease, platforms, releasesPage } from '../lib/releases';
+
+interface Props { platform: 'Windows' | 'Linux' | 'macOS'; }
+const { platform } = Astro.props;
+const release = await getLatestRelease();
+const packages = platforms.find((item) => item.name === platform)!.packages;
+const available = packages.flatMap((item) => {
+  const asset = release?.assets.find((asset) => item.match.test(asset.name));
+  return asset ? [{ ...item, asset }] : [];
+});
+const primary = available.filter((item) => item.primary);
+const alternatives = available.filter((item) => !item.primary);
+const sums = release?.assets.find((asset) => asset.name === 'SHA256SUMS');
+---
+
+{release && available.length ? (
+  <div class="setup-downloads">
+    <p><strong>{release.name || release.tag_name}</strong>{release.prerelease ? ' (pre-release)' : ''}</p>
+    <div class="buttons">
+      {primary.map(({ label, asset }) => <LinkButton href={asset.browser_download_url} icon="download">Download {platform}: {label}</LinkButton>)}
+    </div>
+    {alternatives.length > 0 && <details>
+      <summary>{platform === 'Windows' ? '32-bit installers and portable ZIPs' : 'ARM and Alpine packages'}</summary>
+      <ul>{alternatives.map(({ label, asset }) => <li><a href={asset.browser_download_url}>{label}</a> <small>{asset.name}</small></li>)}</ul>
+    </details>}
+    {sums && <p>Before running a package, compare its SHA-256 hash with its entry in <a href={sums.browser_download_url}>SHA256SUMS</a>.</p>}
+  </div>
+) : <p>Package links could not be loaded. Download the {platform} package and <code>SHA256SUMS</code> from the <a href={releasesPage}>GitHub releases list</a>, then continue with the steps here.</p>}
+
+<style>
+  .buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .buttons :global(a) { margin-top: 0; }
+  small { color: var(--sl-color-gray-3); }
+</style>

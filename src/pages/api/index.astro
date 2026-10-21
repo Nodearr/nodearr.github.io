@@ -1,3 +1,7 @@
+---
+import Wordmark from '../../components/Wordmark.astro';
+---
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -25,7 +29,7 @@
 <body>
   <header class="site-header">
     <img src="/favicon.svg" alt="" />
-    <span>Nodearr API</span>
+    <span><Wordmark /> API</span>
     <nav>
       <a href="/guide/">User guide</a>
       <a href="/">nodearr.com</a>
@@ -37,8 +41,8 @@
   <!-- The description is the one in the Nodearr repository at the version the site documents,
        copied here when the site is built (scripts/sync-docs.mjs). Scalar is loaded from jsDelivr, and its
        telemetry, AI agent, MCP and remote fonts are configured off below. -->
-  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.72.1/dist/browser/standalone.js"></script>
-  <script>
+  <script is:inline src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.72.1/dist/browser/standalone.js"></script>
+  <script is:inline>
     Scalar.createApiReference('#app', {
       url: '/api/openapi.json',
       hideClientButton: true,
