@@ -12,11 +12,15 @@
 // become links between the site's pages, and links to anything else in the repository become
 // links to it on GitHub, at the same version. Link labels may contain plain text, bold text or
 // inline code. Standalone code spans and fenced code blocks are copied without rewriting.
+// Ordered procedures, GitHub alerts and marked alternative sections become Starlight components
+// in generated MDX. See guide-components.mjs and the README for the source Markdown conventions.
 
 import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { guideComponents } from './guide-components.mjs';
+import { setupContent } from './setup-content.mjs';
 
 const site = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const github = 'https://github.com/Nodearr/Nodearr';
@@ -61,7 +65,7 @@ function siteImage(repoPath) {
 }
 
 // Every link and image in the Markdown, outside code, pointed where it works on the site.
-function rewriteLinks(markdown, from) {
+function rewriteLinks(markdown, from, setup = false) {
   // Code blocks are left as they are. Outside them, one pass finds either inline code, left as it
   // is, or a link: [text](target), or ![alt](target) for an image, the ! before the [. A link's
   // text may itself hold inline code, as in [`docker-compose.yml`](...); whichever starts first
@@ -75,6 +79,20 @@ function rewriteLinks(markdown, from) {
         ? part
         : part.replace(linkOrCode, (whole, code, image, text, target) => {
             if (code) return whole;
+            if (setup && target.startsWith('#')) target = `${sitePath(from)}${target}`;
+            if (setup) {
+              const local = {
+                '/guide/installing/#the-first-start': '#open-nodearr',
+                '/guide/connecting-apps/#when-nodearr-sees-the-library-at-another-path': '#when-nodearr-sees-the-library-at-another-path',
+                '/guide/connecting-apps/#adding-an-app': '#connect-your-apps',
+                'connecting-apps.md#when-nodearr-sees-the-library-at-another-path': '#when-nodearr-sees-the-library-at-another-path',
+              }[target];
+              if (local) return `${image}[${text}](${local})`;
+            }
+            // Canonical website links also work locally and in release previews.
+            if (target.startsWith('https://nodearr.com/')) {
+              return `${image}[${text}](${target.slice('https://nodearr.com'.length)})`;
+            }
             if (/^([a-z]+:|#|\/)/i.test(target)) return whole;
 
             const [file, anchor] = target.split('#');
@@ -108,7 +126,15 @@ function page(repoPath, extra = {}) {
     )
     .join('\n');
 
-  return `---\n${yaml}\n---\n\n${rewriteLinks(body, repoPath)}`;
+  const linked = rewriteLinks(body, repoPath);
+  if (!repoPath.startsWith('docs/user-guide/')) return `---\n${yaml}\n---\n\n${linked}`;
+
+  const rich = guideComponents(linked, { steps: !repoPath.endsWith('/README.md') });
+  const imports = rich.components.length ? `import { ${rich.components.join(', ')} } from '@astrojs/starlight/components';\n\n` : '';
+  const anchors = rich.components.includes('Tabs')
+    ? "import TabAnchors from '../../../components/TabAnchors.astro';\n\n<TabAnchors />\n\n"
+    : '';
+  return `---\n${yaml}\n---\n\n${imports}${anchors}${rich.body}`;
 }
 
 // The guide's pages, in the order its contents page lists them.
@@ -126,10 +152,27 @@ for (const name of readdirSync(guideDir).filter((f) => f.endsWith('.md'))) {
   const position = order.indexOf(slug);
   const sidebar = index ? { label: 'Contents', order: 0 } : { order: position < 0 ? 99 : position + 1 };
 
-  writeFileSync(path.join(out, index ? 'index.md' : `${slug}.md`), page(`docs/user-guide/${name}`, { sidebar }));
+  writeFileSync(path.join(out, index ? 'index.mdx' : `${slug}.mdx`), page(`docs/user-guide/${name}`, { sidebar }));
 }
 
 writeFileSync(path.join(site, 'src', 'content', 'docs', 'changelog.md'), page('CHANGELOG.md'));
+
+// Embed the same procedures in the first-run page without adding collection routes.
+const setupDir = path.join(site, 'src', 'generated', 'setup');
+rmSync(setupDir, { recursive: true, force: true });
+mkdirSync(setupDir, { recursive: true });
+const source = (name) => readFileSync(path.join(guideDir, name), 'utf8').replace(/\r\n/g, '\n');
+const chunks = setupContent({
+  installing: source('installing.md'), apps: source('connecting-apps.md'),
+  friends: source('friends-and-sharing.md'), fetching: source('finding-and-fetching.md'),
+  compose: readFileSync(path.join(repo, 'docker', 'docker-compose.yml'), 'utf8').replace(/\r\n/g, '\n'),
+});
+for (const [name, chunk] of Object.entries(chunks)) {
+  const nested = chunk.body.replace(/^(#{2,5}) /gm, '#$1 ');
+  const rich = guideComponents(rewriteLinks(nested, `docs/user-guide/${chunk.from}`, true));
+  const imports = rich.components.length ? `import { ${rich.components.join(', ')} } from '@astrojs/starlight/components';\n\n` : '';
+  writeFileSync(path.join(setupDir, `${name}.mdx`), imports + rich.body + '\n');
+}
 
 // The guide's screenshots, served beside its pages.
 const images = path.join(site, 'public', 'guide', 'images');

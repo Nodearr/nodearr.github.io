@@ -1,0 +1,14 @@
+/* Wordmark colors from Nodearr's Logo/banner-dark.svg and banner-light.svg. */
+.nodearr-wordmark {
+  color: var(--nodearr-wordmark-base, #f0f6fc);
+  white-space: nowrap;
+}
+
+.nodearr-wordmark__arr {
+  color: var(--nodearr-wordmark-accent, #5eead4);
+}
+
+:root[data-theme='light'] {
+  --nodearr-wordmark-base: #0f172a;
+  --nodearr-wordmark-accent: #0d9488;
+}

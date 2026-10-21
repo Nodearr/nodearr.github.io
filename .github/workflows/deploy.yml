@@ -60,6 +60,7 @@ jobs:
           sparse-checkout: |
             docs
             CHANGELOG.md
+            docker/docker-compose.yml
             src/Nodearr.Api.V5/openapi.json
           sparse-checkout-cone-mode: false
 

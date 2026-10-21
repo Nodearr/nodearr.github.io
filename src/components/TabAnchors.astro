@@ -1,0 +1,32 @@
+{/* Keep existing heading links useful when their destination is in an inactive tab. */}
+<script>
+  async function revealAnchor() {
+    if (!location.hash) return;
+    let id: string;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    const target = document.getElementById(id);
+    if (!target?.closest('starlight-tabs')) return;
+    await customElements.whenDefined('starlight-tabs');
+
+    const panels: HTMLElement[] = [];
+    let parent = target.closest<HTMLElement>('[role="tabpanel"]');
+    while (parent) {
+      panels.unshift(parent);
+      parent = parent.parentElement?.closest<HTMLElement>('[role="tabpanel"]') ?? null;
+    }
+    for (const panel of panels) {
+      if (panel.hidden) document.getElementById(panel.getAttribute('aria-labelledby') ?? '')?.click();
+    }
+    requestAnimationFrame(() => target.scrollIntoView());
+  }
+
+  revealAnchor();
+  window.addEventListener('hashchange', revealAnchor);
+  // A reader may switch tabs after following an anchor. Clicking that same section link
+  // again does not emit hashchange, so reveal its panel on that click as well.
+  document.addEventListener('click', (event) => {
+    if (event.defaultPrevented || !(event.target instanceof Element)) return;
+    const link = event.target.closest<HTMLAnchorElement>('a[href]');
+    if (link?.hash && link.href === location.href) requestAnimationFrame(revealAnchor);
+  });
+</script>

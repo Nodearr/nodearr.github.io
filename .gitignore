@@ -6,6 +6,7 @@ dist/
 src/content/docs/guide/
 src/content/docs/changelog.md
 src/docs-version.json
+src/generated/setup/
 public/api/openapi.json
 public/guide/
 
