@@ -29,7 +29,7 @@ The header, home-page title and API header use the repository's two-color wordma
 
 - on every push to `main` here;
 - when Nodearr publishes a release: its workflow sends a `nodearr-release` dispatch with the tag;
-- by hand from the Actions tab, optionally for another Nodearr tag or branch.
+- by hand from the Actions tab, optionally for another Nodearr tag or branch. The name may hold only letters, digits, `.`, `_`, `-` and `/`; anything else stops the run.
 
 In the site's GitHub repository, go to **Settings > Pages**, set **Source** to **GitHub Actions** and configure the custom domain as `nodearr.com`.
 
