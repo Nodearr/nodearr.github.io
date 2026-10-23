@@ -49,6 +49,13 @@ jobs:
             echo "::error::Nodearr has no published release, and no tag or branch was given"
             exit 1
           fi
+          # A tag or branch name, and nothing else: it is written to the step's outputs and used by
+          # the steps after this one. Matched as a whole, so a second line cannot slip through.
+          if [[ ! "$ref" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+            # Not repeated in the log: a line of it could be read as a workflow command.
+            echo "::error::The ref given is not a tag or branch name"
+            exit 1
+          fi
           echo "Publishing the docs of Nodearr $ref"
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
 
@@ -71,7 +78,11 @@ jobs:
 
       - run: npm ci
 
-      - run: node scripts/sync-docs.mjs --repo nodearr --ref "${{ steps.ref.outputs.ref }}"
+      # The ref reaches the command through the environment, as in the step that chose it, never
+      # written into the script itself.
+      - run: node scripts/sync-docs.mjs --repo nodearr --ref "$NODEARR_REF"
+        env:
+          NODEARR_REF: ${{ steps.ref.outputs.ref }}
 
       - run: npm run build
         env:
