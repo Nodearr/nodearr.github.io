@@ -3,6 +3,12 @@ import starlight from '@astrojs/starlight';
 
 export default defineConfig({
   site: 'https://nodearr.com',
+  // Short addresses that Nodearr itself links to. What the project receives from a node is written
+  // in the user guide, in the Nodearr repository, so it changes in the same pull request as the
+  // code that sends it (ADR 0024).
+  redirects: {
+    '/privacy': '/guide/privacy-and-security/#what-anyone-else-sees',
+  },
   integrations: [
     starlight({
       title: 'Nodearr',

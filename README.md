@@ -19,6 +19,8 @@ The guide is still written for GitHub, where it is read too. Links between its p
 
 What is written here: the home page, the structure of Getting started, the packages page and the API page's frame. Getting started embeds installation, connection and pairing procedures from the same released guide, with direct release downloads in the platform tabs. Readers can complete their first transfer without navigating between documentation pages. The packages page and setup guide share one build-time release lookup.
 
+`/privacy` is a short address that Nodearr links to. It redirects to the guide's **What anyone else sees** section (`redirects` in [`astro.config.mjs`](astro.config.mjs)), so what the project receives from a node is written once, in Nodearr/Nodearr, and changes in the same pull request as the code that sends it ([ADR 0024](https://github.com/Nodearr/Nodearr/blob/main/docs/adr/0024-update-checks-and-usage-reports-on-nodearr-com.md)). Keep that heading's wording, or change the redirect with it.
+
 The API frame is an Astro page at [`src/pages/api/index.astro`](src/pages/api/index.astro), so `/api/` works in development and in the published site. Its generated OpenAPI document remains at `/api/openapi.json`.
 
 The header, home-page title and API header use the repository's two-color wordmark: neutral `Node` and teal `arr`. [`wordmark.css`](src/styles/wordmark.css) uses the colors from Nodearr's `Logo/banner-dark.svg` and `banner-light.svg`; keep those banners as the reference for branding. Ordinary product names in prose and page metadata remain plain text.
