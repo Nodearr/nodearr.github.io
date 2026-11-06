@@ -38,6 +38,7 @@ export default defineConfig({
           { label: 'Troubleshooting', link: '/guide/troubleshooting/' },
           { label: 'Settings', link: '/guide/settings/' },
           { label: 'Backups', link: '/guide/backups/' },
+          { label: 'Updating', link: '/guide/updating/' },
           { label: 'Privacy and security', link: '/guide/privacy-and-security/' },
           { label: 'Guide overview', link: '/guide/' },
           { label: 'API', link: '/api/', attrs: { target: '_self' } },
