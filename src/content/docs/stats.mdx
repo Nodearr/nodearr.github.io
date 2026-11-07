@@ -1,0 +1,12 @@
+---
+title: Usage statistics
+description: How many Nodearr nodes run, on which versions, platforms and Arr apps, and how often transfers fail, from the anonymous usage reports.
+---
+
+import UsageStats from '../../components/UsageStats.astro';
+
+These totals come from the anonymous usage report that Nodearr nodes send every 6 hours, unless their owner turns off **Send Anonymous Usage Data**. Each report counts once a day, every number in it is a range, and nothing in it names a node, its owner, its friends or its titles. Each day is added up once it's over, in UTC, and any count under 10 is shown as "fewer than 10". [Privacy and security](/privacy) lists everything a report holds and what is kept.
+
+A report can only say what its node knows, and anyone can send one, so read these as a guide rather than a census.
+
+<UsageStats />
