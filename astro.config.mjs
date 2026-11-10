@@ -40,6 +40,7 @@ export default defineConfig({
           { label: 'Backups', link: '/guide/backups/' },
           { label: 'Updating', link: '/guide/updating/' },
           { label: 'Privacy and security', link: '/guide/privacy-and-security/' },
+          { label: 'Usage statistics', link: '/stats/' },
           { label: 'Guide overview', link: '/guide/' },
           { label: 'API', link: '/api/', attrs: { target: '_self' } },
         ] },

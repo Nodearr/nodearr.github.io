@@ -1,0 +1,179 @@
+---
+// The totals usage.nodearr.com publishes once a day, read in the browser so the page shows the
+// latest without a rebuild (ADR 0024, Nodearr/Nodearr#133). Any count under 10 arrives as null and
+// is shown as "fewer than 10". Nothing on this page is sent anywhere: it only reads.
+---
+
+<div class="usage-stats" data-source="https://usage.nodearr.com/v1/stats.json">
+  <p class="usage-stats__status">Loading the totals…</p>
+  <div class="usage-stats__content" hidden></div>
+</div>
+
+<noscript>
+  <p>This page reads the totals from <a href="https://usage.nodearr.com/v1/stats.json">usage.nodearr.com/v1/stats.json</a> in your browser, which needs JavaScript.</p>
+</noscript>
+
+<script>
+  type Counts = Record<string, number | null>;
+
+  interface DayTotals {
+    day: string;
+    nodes: number | null;
+    active: number | null;
+    [key: string]: unknown;
+  }
+
+  const FEWER = 'fewer than 10';
+
+  const labels: Record<string, Record<string, string>> = {
+    install: {
+      installerTray: 'Windows installer, tray app',
+      installerService: 'Windows installer, service',
+      zip: 'Windows zip',
+      tarball: 'Linux or macOS archive',
+      docker: 'Docker',
+      package: 'Package manager',
+      development: 'Development build',
+    },
+    routes: {
+      allDirect: 'Every friend reached directly',
+      someRelayOnly: 'At least one friend only through a relay',
+      someUnreachable: 'At least one friend not reached at all',
+      noneChecked: 'No friend checked',
+    },
+    relay: { n0: 'The default relays', own: 'Their own relay', off: 'No relay' },
+    yesNo: { yes: 'Yes', no: 'No', unknown: 'Not known' },
+    features: {
+      shareLists: 'Share lists',
+      hiddenTitles: 'The Hidden list',
+      shareEverything: 'Sharing everything with a friend',
+      fetchAutomatically: "Fetching friends' new files automatically",
+      uploadLimit: 'An upload limit',
+      totalUploadLimit: 'A total upload limit',
+      downloadLimit: 'A download limit',
+    },
+    maxUploads: { default: 'The default, 3', other: 'Another number', none: 'No limit' },
+  };
+
+  const count = (value: unknown) => (typeof value === 'number' ? value.toLocaleString('en-GB') : FEWER);
+
+  function el<K extends keyof HTMLElementTagNameMap>(tag: K, text?: string) {
+    const node = document.createElement(tag);
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  // One table of what the nodes of a day had, largest first; counts hidden as null go last.
+  function table(title: string, counts: Counts | undefined, names: Record<string, string> = {}) {
+    const section = el('section');
+    section.append(el('h3', title));
+
+    const rows = Object.entries(counts ?? {}).sort(([, a], [, b]) => (b ?? -1) - (a ?? -1));
+
+    if (rows.length === 0) {
+      section.append(el('p', 'Nothing yet.'));
+      return section;
+    }
+
+    const t = el('table');
+    const head = el('tr');
+    head.append(el('th', title), el('th', 'Nodes'));
+    t.append(el('thead'));
+    t.tHead!.append(head);
+
+    const body = el('tbody');
+    for (const [key, value] of rows) {
+      const row = el('tr');
+      row.append(el('td', names[key] ?? key), el('td', count(value)));
+      body.append(row);
+    }
+
+    t.append(body);
+    section.append(t);
+    return section;
+  }
+
+  function perDay(days: DayTotals[]) {
+    const section = el('section');
+    section.append(el('h3', 'Nodes per day'));
+
+    const t = el('table');
+    const head = el('tr');
+    head.append(el('th', 'Day (UTC)'), el('th', 'Nodes'), el('th', 'Active'));
+    t.append(el('thead'));
+    t.tHead!.append(head);
+
+    const body = el('tbody');
+    for (const day of days.slice(-30).reverse()) {
+      const row = el('tr');
+      row.append(el('td', day.day), el('td', count(day.nodes)), el('td', count(day.active)));
+      body.append(row);
+    }
+
+    t.append(body);
+    section.append(t);
+    return section;
+  }
+
+  async function show(root: HTMLElement) {
+    const status = root.querySelector<HTMLElement>('.usage-stats__status')!;
+    const content = root.querySelector<HTMLElement>('.usage-stats__content')!;
+
+    let days: DayTotals[] = [];
+
+    try {
+      const response = await fetch(root.dataset.source!, { credentials: 'omit' });
+      if (!response.ok) throw new Error(String(response.status));
+      days = (await response.json()).days ?? [];
+    } catch {
+      status.textContent = "The totals couldn't be loaded from usage.nodearr.com. Try again later.";
+      return;
+    }
+
+    if (days.length === 0) {
+      status.textContent = 'No totals yet. usage.nodearr.com adds up each day once it is over.';
+      return;
+    }
+
+    const latest = days[days.length - 1];
+    status.textContent = `On ${latest.day}, ${count(latest.nodes)} nodes sent a report, and ${count(latest.active)} of them moved a file or answered a grab in the 30 days before.`;
+
+    const yesNo = (key: string) => latest[key] as Counts;
+    const features = latest.features as Counts | undefined;
+
+    content.append(
+      perDay(days),
+      el('h2', `On ${latest.day}`),
+      table('Version', latest.version as Counts),
+      table('Platform', latest.platform as Counts),
+      table('Installed with', latest.install as Counts, labels.install),
+      table('Arr apps', latest.apps as Counts),
+      table('Friends', latest.friends as Counts),
+      table('Routes to friends in the past week', latest.routes as Counts, labels.routes),
+      table('Failures in the past week, by reason', latest.failures as Counts),
+      table('UDP gets out', yesNo('udp'), labels.yesNo),
+      table('Public port varies by destination', yesNo('portVaries'), labels.yesNo),
+      table('Relay', latest.relay as Counts, labels.relay),
+      table('Features in use', features, labels.features),
+      table('Most Uploads at Once', latest.maxUploads as Counts, labels.maxUploads),
+      table('Language', latest.language as Counts),
+    );
+
+    content.hidden = false;
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('.usage-stats')) {
+    show(root);
+  }
+</script>
+
+<style>
+  .usage-stats__content :global(section) {
+    margin-top: 1.5rem;
+  }
+
+  .usage-stats__content :global(td:last-child),
+  .usage-stats__content :global(th:last-child) {
+    text-align: right;
+  }
+</style>
